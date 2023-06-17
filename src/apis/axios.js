@@ -2,14 +2,13 @@ import axios from "axios";
 import { getCookie, removeCookie } from "../utils/cookie";
 import { refreshToken } from "./api";
 
-// baseURL, credential, 헤더 세팅 
-axios.defaults.baseURL = 'http://localhost:8000/api';
+// baseURL, credential, 헤더 세팅
+axios.defaults.baseURL = "http://localhost:8000/api";
 axios.defaults.withCredentials = true;
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.common['X-CSRFToken'] = getCookie('csrftoken');
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.headers.common["X-CSRFToken"] = getCookie("csrftoken");
 
-
-// 누구나 접근 가능한 API들 
+// 누구나 접근 가능한 API들
 export const instance = axios.create();
 
 // Token 있어야 접근 가능한 API들 - 얘는 토큰을 넣어줘야 해요
@@ -18,9 +17,9 @@ export const instanceWithToken = axios.create();
 // instanceWithToken에는 쿠키에서 토큰을 찾고 담아줍시다!
 instanceWithToken.interceptors.request.use(
   // 요청을 보내기전 수행할 일
-  // 사실상 이번 세미나에 사용할 부분은 이거밖에 없어요 
+  // 사실상 이번 세미나에 사용할 부분은 이거밖에 없어요
   (config) => {
-    const accessToken = getCookie('access_token');
+    const accessToken = getCookie("access_token");
 
     if (!accessToken) {
       // token 없으면 리턴
@@ -40,8 +39,6 @@ instanceWithToken.interceptors.request.use(
   }
 );
 
-
-
 instanceWithToken.interceptors.response.use(
   (response) => {
     console.log("Interceptor Response!!");
@@ -51,7 +48,8 @@ instanceWithToken.interceptors.response.use(
     console.log("Response Error!!");
 
     const originalRequest = error.config;
-    if (error.response.status === 401) { //토큰이 만료됨에 따른 에러인지 확인
+    if (error.response.status === 401) {
+      //토큰이 만료됨에 따른 에러인지 확인
       const token = getCookie("refresh_token");
       await refreshToken(token); //refresh token 을 활용하여 access token 을 refresh
 
@@ -61,11 +59,12 @@ instanceWithToken.interceptors.response.use(
   }
 );
 
-
 // src/apis/axios.js
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   axios.defaults.baseURL = "http://localhost:8000/api";
 } else {
-  axios.defaults.baseURL = "https://port-0-snulion-week12-koh2xlisex7sv.sel4.cloudtype.app/api";
+  axios.defaults.baseURL =
+    "https://port-0-likelion-final-django-dihik2mlizm4wsm.sel4.cloudtype.app";
 }
+
